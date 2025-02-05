@@ -1,3 +1,5 @@
+package com.marcobouin;
+
 import org.apache.commons.math3.util.ArithmeticUtils;
 
 public class Calculator {
