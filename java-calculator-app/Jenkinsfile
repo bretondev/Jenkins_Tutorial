@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+
+    environment {
+        MAVEN_HOME = tool 'Maven'  // Replace with your Maven tool name from Jenkins settings
+        JAVA_HOME = tool 'JDK_17'         // Replace with your JDK tool name from Jenkins settings
+        PATH = "${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        
+                    stage('Checkout') {
+                        steps {
+                            git branch: 'main', url: 'https://github.com/bretondev/Jenkins_Tutorial.git'
+                        }
+                    }
+            
+                    stage('Validate') {
+                        steps {
+                            dir('java-calculator-app') {
+                                sh 'mvn validate'
+                            }
+                        }
+                    }
+            
+                    stage('Compile') {
+                        steps {
+                            dir('java-calculator-app') {
+                                sh 'mvn compile'
+                            }
+                        }
+                    }
+            
+                    stage('Test') {
+                        steps {
+                            dir('java-calculator-app') {
+                                sh 'mvn test'
+                            }
+                        }
+                    }
+            
+                    stage('Package') {
+                        steps {
+                            dir('java-calculator-app') {
+                                sh 'mvn package'
+                            }
+                        }
+                    }
+            
+                    stage('Run Application') {
+                        steps {
+                            dir('java-calculator-app') {
+                                sh 'java -jar target/java-calculator-app-1.0-SNAPSHOT.jar'
+                            }
+                        }
+                    }
+                    
+    }
+
+    post {
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed. Please check the logs.'
+        }
+    }
+}
