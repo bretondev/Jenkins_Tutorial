@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+    stages {
+        stage('Stage for the main branch') {
+            when {
+                branch 'main'  // Deploy only on the main branch
+            }
+            steps {
+                echo "${env.BRANCH_NAME} has been detected"
+            }
+        }
+        stage('Stage for the dev branch') {
+            when {
+                branch 'dev'  // Deploy only on the dev branch
+            }
+            steps {
+                echo "${env.BRANCH_NAME} has been detected"
+            }
+        }
+    }
+}
