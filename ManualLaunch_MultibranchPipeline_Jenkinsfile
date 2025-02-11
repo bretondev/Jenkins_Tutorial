@@ -1,6 +1,12 @@
 pipeline {
     agent any
     stages {
+         stage('Debug Branch Name') {
+            steps {
+                echo "Detected branch: ${env.BRANCH_NAME}"
+            }
+        }
+
         stage('Stage for the main branch') {
             when {
                 expression { env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'origin/main' }
