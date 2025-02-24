@@ -1,0 +1,43 @@
+// Job 1: Simple Freestyle Job  
+job('Job 1 created from DSL Seed Job') {
+    description('Job 1 created from DSL Seed Job')
+    scm {
+        git('https://github.com/example/repo-1.git', 'main')
+    }
+    triggers {
+        cron('H/15 * * * *')
+    }
+    steps {
+        shell('echo "Running Job 1"')
+    }
+}
+
+// Job 2: Pipeline Job using Jenkinsfile  
+pipelineJob('Job 2 created from DSL Seed Job') {
+    description('Job 2 created from DSL Seed Job')
+    definition {
+        cpsScm {
+            scm {
+                git {
+                    remote {
+                        url('https://github.com/example/repo-2.git')
+                    }
+                    branch('main')
+                }
+            }
+            scriptPath('Jenkinsfile')
+        }
+    }
+}
+
+// Job 3: Parameterized Job with Shell Script  
+job('Job 3 created from DSL Seed Job') {
+    description('Job 3 created from DSL Seed Job')
+    parameters {
+        stringParam('USERNAME', 'defaultUser', 'Enter your username')
+        choiceParam('ENV', ['DEV', 'QA', 'PROD'], 'Select the environment')
+    }
+    steps {
+        shell('echo "Hello $USERNAME, deploying to $ENV environment"')
+    }
+}
