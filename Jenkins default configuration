@@ -1,0 +1,133 @@
+jenkins:
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  disabledAdministrativeMonitors:
+  - "OldData"
+  labelAtoms:
+  - name: "built-in"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  nodeMonitors:
+  - "architecture"
+  - "clock"
+  - "swapSpace"
+  - diskSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - tmpSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "responseTime"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 0
+  slaveAgentPort: -1
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+  - list:
+      columns:
+      - "status"
+      - "weather"
+      - "jobName"
+      - "lastSuccess"
+      - "lastFailure"
+      - "lastDuration"
+      - "buildButton"
+      jobNames:
+      - "ManualLaunch_RunJavaCalculatorApp_Freestyle"
+      name: "Freestyle jobs"
+  - list:
+      columns:
+      - "status"
+      - "weather"
+      - "jobName"
+      - "lastSuccess"
+      - "lastFailure"
+      - "lastDuration"
+      - "buildButton"
+      jobNames:
+      - "ManualLaunch_RunJavaCalculatorApp_Jenkinsfile"
+      name: "Pipeline jobs"
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+globalCredentialsConfiguration:
+  configuration:
+    providerFilter: "none"
+    typeFilter: "none"
+appearance:
+  locale:
+    ignoreAcceptLanguage: true
+    systemLocale: "en"
+  prism:
+    theme: PRISM
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  cps:
+    hideSandbox: false
+  gitHooks:
+    allowedOnAgents: false
+    allowedOnController: false
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "knownHostsFileVerificationStrategy"
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: true
+  scriptApproval:
+    forceSandbox: false
+unclassified:
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitHubPluginConfig:
+    hookUrl: "http://localhost:8080/github-webhook/"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://localhost:8080/"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+  scmGit:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+tool:
+  git:
+    installations:
+    - home: "git.exe"
+      name: "Default"
+  jdk:
+    installations:
+    - home: "C:\\Dev\\Tools\\JDK_17\\"
+      name: "JDK_17"
+  maven:
+    installations:
+    - home: "C:\\Dev\\Tools\\Maven"
+      name: "Maven"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
