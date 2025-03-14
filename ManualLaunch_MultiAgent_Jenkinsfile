@@ -1,0 +1,36 @@
+pipeline {
+    agent none  // This means the pipeline doesn't use the master node, it runs on a specified agent node.
+
+    stages {
+        stage('Run on Jenkins Agent') {
+            agent { label 'jenkins-agent' }  // Replace 'jenkins-agent' with the label of your actual agent.
+
+            steps {
+                script {
+                    // Print the agent name to confirm it's running on the correct node
+                    echo "This job is running on the node: ${env.NODE_NAME}"
+
+                    // Execute some commands on the agent
+                    sh '''
+                        echo "Hello from Jenkins Agent!"
+                        echo "The date and time is: $(date)"
+                        echo "Running on agent node: $(hostname)"
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // This will always run, regardless of success or failure
+            echo 'Job complete.'
+        }
+        success {
+            echo 'Job completed successfully!'
+        }
+        failure {
+            echo 'Job failed!'
+        }
+    }
+}
