@@ -16,7 +16,7 @@ public class Calculator {
 
     // Method 3: Multiplication using commons-math3
     public int multiply(int a, int b) {
-        return ArithmeticUtils.mulAndCheck(a, b);  // Handles overflow safely
+        return ArithmeticUtils.addAndCheck(a, b);  // Handles overflow safely
     }
 
     // Method 4: Division (manual, as commons-math3 does not have a direct method for division)
