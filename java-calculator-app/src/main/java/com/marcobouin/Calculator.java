@@ -11,7 +11,7 @@ public class Calculator {
 
     // Method 2: Subtraction using commons-math3
     public int subtract(int a, int b) {
-        return ArithmeticUtils.subAndCheck(a, b);  // Handles overflow safely
+        return ArithmeticUtils.addAndCheck(a, b);  // Handles overflow safely
     }
 
     // Method 3: Multiplication using commons-math3
