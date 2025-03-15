@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'NodeJS-22'
+    }
+
+    stages {
+        
+                    stage('Checkout') {
+                        steps {
+                            git branch: 'main', url: 'https://github.com/bretondev/Jenkins_Tutorial.git'
+                        }
+                    }
+            
+                    stage('Install depedencies') {
+                        steps {
+                            dir('node-calculator-app') {
+                                sh 'npm install'
+                            }
+                        }
+                    }
+            
+                    stage('Package') {
+                        steps {
+                            dir('node-calculator-app') {
+                                sh 'npm test'
+                            }
+                        }
+                    }
+            
+                    stage('Run Application') {
+                        steps {
+                            dir('node-calculator-app') {
+                                sh 'npm start'
+                            }
+                        }
+                    }
+                    
+    }
+
+}
