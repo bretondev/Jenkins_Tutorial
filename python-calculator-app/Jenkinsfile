@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        python 'Python'  // replace 'Python3' with your Jenkins Python tool name
+    }
+
     stages {
         stage('Install dependencies') {
             steps {
