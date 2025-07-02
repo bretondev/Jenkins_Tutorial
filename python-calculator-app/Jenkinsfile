@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+   tools {
+        python 'Python3'  // This must match your configured Python tool name
+    }
+
     stages {
 
         stage('Install dependencies') {
