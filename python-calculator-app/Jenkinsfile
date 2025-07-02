@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        python 'Python3'  // replace 'Python3' with your Jenkins Python tool name
+        shiningpandaPython 'Python3'  // replace 'Python3' with your Jenkins Python tool name
     }
 
     stages {
