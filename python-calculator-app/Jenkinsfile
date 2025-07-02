@@ -1,21 +1,63 @@
-node {
-    // Use the Python installation named 'Python3' configured in Jenkins Global Tool Configuration
-    withPythonEnv('Python3') {
-        stage('Checkout') {
-            checkout scm
-        }
+pipeline {
+
+
+
+    agent any
+
+
+
+
+    stages {
 
         stage('Install dependencies') {
-            bat 'python -m pip install --upgrade pip'
-            bat 'python -m pip install -r requirements.txt'
+
+
+            steps {
+
+
+                bat 'python -m pip install --upgrade pip'
+
+
+                bat 'python -m pip install -r requirements.txt'
+
+
+            }
+
         }
+
+
 
         stage('Run Tests') {
-            bat 'python -m unittest test_operations.py'
+
+
+            steps {
+
+
+                bat 'python -m unittest test_operations.py'
+
+
+            }
+
         }
 
+
+
         stage('Run Application') {
-            bat 'python main.py'
+
+
+            steps {
+
+
+                bat 'python main.py'
+
+
+            }
+
         }
+
     }
+
+
+
+
 }
