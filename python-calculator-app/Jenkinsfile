@@ -3,6 +3,10 @@ pipeline {
 
     stages {
 
+        tools {
+            python 'Python3'  // <-- your Python tool name here
+        }
+
         stage('Install dependencies') {
             steps {
                 bat 'cd python-calculator-app && python -m pip install --upgrade pip'
