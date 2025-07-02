@@ -1,63 +1,25 @@
 pipeline {
-
-
-
     agent any
-
-
-
 
     stages {
 
         stage('Install dependencies') {
-
-
             steps {
-
-
-                bat 'python -m pip install --upgrade pip'
-
-
-                bat 'python -m pip install -r requirements.txt'
-
-
+                bat 'cd python-calculator-app && python -m pip install --upgrade pip'
+                bat 'cd python-calculator-app && python -m pip install -r requirements.txt'
             }
-
         }
-
-
 
         stage('Run Tests') {
-
-
             steps {
-
-
-                bat 'python -m unittest test_operations.py'
-
-
+                bat 'cd python-calculator-app && python -m unittest test_operations.py'
             }
-
         }
-
-
 
         stage('Run Application') {
-
-
             steps {
-
-
-                bat 'python main.py'
-
-
+                bat 'cd python-calculator-app && python main.py'
             }
-
         }
-
     }
-
-
-
-
 }
