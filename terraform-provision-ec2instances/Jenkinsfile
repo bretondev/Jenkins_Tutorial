@@ -4,17 +4,12 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-        AWS_DEFAULT_REGION = 'us-east-1'
+        AWS_DEFAULT_REGION = 'eu-west-3'
         TF_WORKING_DIR = 'terraform-provision-ec2instances'
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
+        
         stage('Terraform Init') {
             steps {
                 dir("${env.TF_WORKING_DIR}") {
@@ -40,11 +35,4 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            dir("${env.TF_WORKING_DIR}") {
-                bat 'terraform output'
-            }
-        }
-    }
 }
