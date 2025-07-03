@@ -11,8 +11,15 @@ pipeline {
             steps {
                 script {
                     bat '''
-                        wsl bash -c "cp ansible-install-apache/apache-server.pem /tmp/apache-server.pem && chmod 600 /tmp/apache-server.pem && ansible-playbook -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml --private-key /tmp/apache-server.pem -vvvv"
+                    wsl bash -c " \
+                      cp ansible-install-apache/apache-server.pem /tmp/apache-server.pem && \
+                      chmod 600 /tmp/apache-server.pem && \
+                      export ANSIBLE_HOST_KEY_CHECKING=False && \
+                      export ANSIBLE_SSH_ARGS='-o ControlMaster=no -o StrictModes=no' && \
+                      ansible-playbook -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml --private-key /tmp/apache-server.pem -vvvv \
+                    "
                     '''
+
                 }
             }
         }
