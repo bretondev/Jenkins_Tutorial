@@ -2,29 +2,29 @@
 - name: Install Apache HTTP Server on EC2 instances
   hosts: apacheservers
   become: yes
+  gather_facts: no  # disable default fact gathering
 
-gather_facts: no  # disable default full fact gathering
-  
   tasks:
-
-      - name: Gather only ansible_distribution fact
+    - name: Gather only ansible_distribution fact
       ansible.builtin.setup:
         filter: "ansible_distribution"
-        - debug:
-            var: ansible_facts.ansible_distribution
-        
-    - name: Install Apache
+
+    - name: Debug ansible_distribution fact
+      debug:
+        var: ansible_facts.ansible_distribution
+
+    - name: Install Apache (Amazon Linux)
       ansible.builtin.yum:
         name: httpd
         state: present
-      when: ansible_distribution == "Amazon"
+      when: ansible_facts.ansible_distribution == "Amazon"
 
     - name: Install Apache2 (Ubuntu/Debian)
       ansible.builtin.apt:
         name: apache2
         state: present
         update_cache: yes
-      when: ansible_distribution in ["Ubuntu", "Debian"]
+      when: ansible_facts.ansible_distribution in ["Ubuntu", "Debian"]
 
     - name: Start and enable Apache service
       ansible.builtin.service:
@@ -33,4 +33,4 @@ gather_facts: no  # disable default full fact gathering
         enabled: yes
 
   vars:
-    apache_service_name: "{{ 'httpd' if ansible_distribution == 'Amazon' else 'apache2' }}"
+    apache_service_name: "{{ 'httpd
