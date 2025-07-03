@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
-        ANSIBLE_SSH_ARGS = '-o ControlMaster=no -o StrictModes=no'
+        ANSIBLE_SSH_ARGS = '-o ControlMaster=no -o StrictHostKeyChecking=no'
     }
 
     stages {
@@ -14,12 +14,10 @@ pipeline {
                     wsl bash -c " \
                       cp ansible-install-apache/apache-server.pem /tmp/apache-server.pem && \
                       chmod 600 /tmp/apache-server.pem && \
-                      export ANSIBLE_HOST_KEY_CHECKING=False && \
-                      export ANSIBLE_SSH_ARGS='-o ControlMaster=no -o StrictHostKeyChecking=no && \
+                      ANSIBLE_HOST_KEY_CHECKING=False ANSIBLE_SSH_ARGS='-o ControlMaster=no -o StrictHostKeyChecking=no' \
                       ansible-playbook -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml --private-key /tmp/apache-server.pem -vvvv \
                     "
                     '''
-
                 }
             }
         }
