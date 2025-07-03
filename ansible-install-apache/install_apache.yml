@@ -1,6 +1,6 @@
 ---
 - name: Install Apache HTTP Server on EC2 instances
-  hosts: webservers
+  hosts: apacheservers
   become: yes
 
   tasks:
