@@ -8,9 +8,12 @@ pipeline {
     stages {
         stage('Install Apache on EC2 instances') {
             steps {
-                sh '''
-                    ansible-playbook -i inventory.ini install_apache.yml
-                '''
+                script {
+                    // Call WSL explicitly
+                    bat '''
+                        wsl ansible-playbook -i /mnt/c/path/to/your/project/inventory.ini /mnt/c/path/to/your/project/install_apache.yml
+                    '''
+                }
             }
         }
     }
