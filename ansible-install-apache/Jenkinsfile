@@ -11,6 +11,7 @@ pipeline {
                 script {
                     // Call WSL explicitly
                     bat '''
+                        wsl bash -c "chmod 600 ansible-install-apache/apache-server.pem && \
                         wsl ansible-playbook -vvvvv -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml --private-key ansible-install-apache/apache-server.pem
                     '''
                 }
