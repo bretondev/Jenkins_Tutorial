@@ -11,7 +11,7 @@ pipeline {
                 sshagent (credentials: ['apache-server']) {
                     // Call WSL explicitly
                     bat '''
-                        wsl ansible-playbook -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml -vvvv
+                        wsl ansible-playbook -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml --private-key ansible-install-apache/apache-server.pem
                     '''
                 }
             }
