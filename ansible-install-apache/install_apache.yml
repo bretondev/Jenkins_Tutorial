@@ -1,7 +1,7 @@
 ---
 - name: Install Apache HTTP Server on EC2 instances
   hosts: apacheservers
-  become: yes
+  become: no
   gather_facts: no  # disable default fact gathering
 
   tasks:
