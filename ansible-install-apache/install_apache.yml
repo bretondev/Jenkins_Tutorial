@@ -32,5 +32,5 @@
         state: started
         enabled: yes
 
-  vars:
-    apache_service_name: "{{ 'httpd
+vars:
+  apache_service_name: "{{ 'httpd' if ansible_facts.ansible_distribution == 'Amazon' else 'apache2' }}"
