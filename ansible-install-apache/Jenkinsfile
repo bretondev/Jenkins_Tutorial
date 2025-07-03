@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Install Apache on EC2 instances') {
             steps {
-                sshagent (credentials: ['apache-server']) {
+                script {
                     // Call WSL explicitly
                     bat '''
                         wsl ansible-playbook -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml --private-key ansible-install-apache/apache-server.pem
