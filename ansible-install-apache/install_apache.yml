@@ -1,0 +1,27 @@
+---
+- name: Install Apache HTTP Server on EC2 instances
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Install Apache
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+      when: ansible_distribution == "Amazon"
+
+    - name: Install Apache2 (Ubuntu/Debian)
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+        update_cache: yes
+      when: ansible_distribution in ["Ubuntu", "Debian"]
+
+    - name: Start and enable Apache service
+      ansible.builtin.service:
+        name: "{{ apache_service_name }}"
+        state: started
+        enabled: yes
+
+  vars:
+    apache_service_name: "{{ 'httpd' if ansible_distribution == 'Amazon' else 'apache2' }}"

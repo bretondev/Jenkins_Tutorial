@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+
+    environment {
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
+    }
+
+    stages {
+        stage('Install Apache on EC2 instances') {
+            steps {
+                sh '''
+                    ansible-playbook -i inventory.ini install_apache.yml
+                '''
+            }
+        }
+    }
+}
