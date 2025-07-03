@@ -3,9 +3,16 @@
   hosts: apacheservers
   become: yes
 
-  gather_facts: yes
+gather_facts: no  # disable default full fact gathering
   
   tasks:
+
+      - name: Gather only ansible_distribution fact
+      ansible.builtin.setup:
+        filter: "ansible_distribution"
+        - debug:
+            var: ansible_facts.ansible_distribution
+        
     - name: Install Apache
       ansible.builtin.yum:
         name: httpd
