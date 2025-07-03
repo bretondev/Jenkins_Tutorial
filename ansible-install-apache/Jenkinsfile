@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
-        ANSIBLE_SSH_ARGS = '-o StrictModes=no'
+        ANSIBLE_SSH_ARGS = '-o ControlMaster=no -o StrictModes=no'
     }
 
     stages {
