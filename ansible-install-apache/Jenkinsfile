@@ -11,7 +11,10 @@ pipeline {
             steps {
                 script {
                     bat '''
-                        wsl bash -c "chmod 600 ansible-install-apache/apache-server.pem && ansible-playbook -vvvvv -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml --private-key ansible-install-apache/apache-server.pem"
+                        wsl bash -c "
+                        cp ansible-install-apache/apache-server.pem /home/marco/apache-server.pem && \
+                        chmod 600 /home/marco/apache-server.pem && \
+                        ansible-playbook -vvvvv -i ansible-install-apache/inventory.ini ansible-install-apache/install_apache.yml --private-key /home/marco/apache-server.pem"
                     '''
                 }
             }
