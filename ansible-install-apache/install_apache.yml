@@ -4,6 +4,9 @@
   become: yes
   gather_facts: no  # disable default fact gathering
 
+  vars:
+    apache_service_name: "{{ 'httpd' if ansible_facts.ansible_distribution == 'Amazon' else 'apache2' }}"
+
   tasks:
     - name: Gather only ansible_distribution fact
       ansible.builtin.setup:
@@ -31,6 +34,3 @@
         name: "{{ apache_service_name }}"
         state: started
         enabled: yes
-
-vars:
-  apache_service_name: "{{ 'httpd' if ansible_facts.ansible_distribution == 'Amazon' else 'apache2' }}"
