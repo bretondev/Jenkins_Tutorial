@@ -5,7 +5,6 @@ pipeline {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
         ANSIBLE_SSH_ARGS = '-o StrictModes=no'
     }
-    }
 
     stages {
         stage('Install Apache on EC2 instances') {
