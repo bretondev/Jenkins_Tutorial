@@ -78,5 +78,14 @@ pipeline {
                 """
             }
         }
+        
+        stage('Create Service in EKS') {
+            steps {
+                bat """
+                    kubectl --kubeconfig=%KUBECONFIG% apply -f ${WORKDIR}\\k8s\\service.yaml
+                """
+            }
+        }
+
     }
 }
