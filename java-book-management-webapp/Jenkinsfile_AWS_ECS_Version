@@ -53,9 +53,8 @@ pipeline {
                 ]) {
                     script {
                         def taskDefArn = bat(
-                            script: "aws ecs list-task-definitions --family-prefix ${CLUSTER_NAME} --sort DESC --max-items 1 --query \"taskDefinitionArns[0]\" --output text",
-                            returnStdout: true,
-                            dir: "${WORKDIR}"
+                            script: '@echo off & aws ecs list-task-definitions --family-prefix ' + CLUSTER_NAME + ' --sort DESC --max-items 1 --query "taskDefinitionArns[0]" --output text',
+                            returnStdout: true
                         ).trim()
 
                         bat """
