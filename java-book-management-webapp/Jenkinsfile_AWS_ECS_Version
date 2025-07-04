@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'us-east-1' // Change to your region
-        ECR_REPO = 'your-ecr-repo-name'
+        AWS_REGION = 'eu-west-3' // Change to your region
+        ECR_REPO = 'book-management-webapp'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         AWS_ACCOUNT_ID = '123456789012'  // your AWS account ID
         CLUSTER_NAME = 'your-ecs-cluster-name'
