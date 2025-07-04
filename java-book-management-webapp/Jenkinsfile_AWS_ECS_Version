@@ -52,10 +52,15 @@ pipeline {
                     string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
                 ]) {
                     script {
-                        def taskDefArn = bat(
-                            script: '@echo off & aws ecs list-task-definitions --family-prefix ' + CLUSTER_NAME + ' --sort DESC --max-items 1 --query "taskDefinitionArns[0]" --output text',
+                        def taskDefOutput = bat(
+                            script: '@echo off & aws ecs list-task-definitions --family-prefix book-management-webapp --sort DESC --max-items 1 --query "taskDefinitionArns[0]" --output text',
                             returnStdout: true
                         ).trim()
+                        
+                        // In case the output has multiple lines, split and take the first line:
+                        def taskDefArn = taskDefOutput.split('\r?\n')[0].trim()
+                        
+                        echo "Task Definition ARN: ${taskDefArn}"
 
                         bat """
                             aws configure set aws_access_key_id %AWS_ACCESS_KEY_ID%
