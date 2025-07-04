@@ -22,22 +22,28 @@ pipeline {
         }
 
 
-        stage('Run Docker Container') {
-            steps {
-                dir("${APP_DIR}") {
-                    script {
-                        bat 'docker ps -a --format "{{.Names}}" | findstr /R /C:"^' + CONTAINER_NAME + '$" >nul'
-                        bat """
+    stage('Run Docker Container') {
+        steps {
+            dir('java-book-management-webapp') {
+                script {
+                    // Check if container exists and stop & remove it if it does
+                    bat """
+                        docker ps -a --format "{{.Names}}" | findstr /R /C:"^${CONTAINER_NAME}$" >nul
                         if %ERRORLEVEL% == 0 (
+                            echo Stopping and removing existing container...
                             docker stop ${CONTAINER_NAME}
                             docker rm ${CONTAINER_NAME}
+                        ) else (
+                            echo No existing container found.
                         )
-                        """
-                        bat "docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} ${IMAGE_NAME}:latest"
-                    }
+                    """
+                    // Start new container
+                    bat "docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} ${IMAGE_NAME}:latest"
                 }
             }
         }
+    }
+
 
     }
 }
