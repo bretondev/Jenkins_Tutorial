@@ -1,14 +1,23 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-slim
+# Stage 1: Build the JAR
+FROM maven:3.9.3-eclipse-temurin-17 AS build
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the built jar file from target folder into the container
-COPY target/book-crud-1.0-SNAPSHOT.jar app.jar
+# Copy pom and source code
+COPY pom.xml .
+COPY src ./src
 
-# Expose port 8080 (or whatever your app uses)
+# Build the app (package phase)
+RUN mvn clean package -DskipTests
+
+# Stage 2: Create a lightweight image and copy the JAR from build stage
+FROM openjdk:17-jdk-slim
+
+WORKDIR /app
+
+# Copy the jar from the build stage
+COPY --from=build /app/target/book-crud-1.0-SNAPSHOT.jar app.jar
+
 EXPOSE 8081
 
-# Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
