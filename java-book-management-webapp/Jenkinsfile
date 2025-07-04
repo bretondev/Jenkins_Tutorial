@@ -4,15 +4,16 @@ pipeline {
     environment {
         IMAGE_NAME = 'book-crud-app'
         CONTAINER_NAME = 'book-crud-container'
-        PORT = '8081'
+        HOST_PORT = '8081'
+        CONTAINER_PORT = '8081'
     }
 
     stages {
 
-      stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:latest", "-f Dockerfile .")
+                    docker.build("${IMAGE_NAME}:latest", ".")
                 }
             }
         }
@@ -20,18 +21,18 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Stop and remove container if already running
-                    sh """
-                        if docker ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}\$"; then
-                            docker stop ${CONTAINER_NAME} || true
-                            docker rm ${CONTAINER_NAME} || true
-                        fi
+                    // Stop and remove existing container if it exists
+                    bat """
+                    docker ps -a --format "{{.Names}}" | findstr /R /C:"^${CONTAINER_NAME}$" >nul
+                    if %ERRORLEVEL% == 0 (
+                        docker stop ${CONTAINER_NAME}
+                        docker rm ${CONTAINER_NAME}
+                    )
                     """
                     // Run container
-                    sh "docker run -d --name ${CONTAINER_NAME} -p ${PORT}:8081 ${IMAGE_NAME}:latest"
+                    bat "docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} ${IMAGE_NAME}:latest"
                 }
             }
         }
     }
-
 }
