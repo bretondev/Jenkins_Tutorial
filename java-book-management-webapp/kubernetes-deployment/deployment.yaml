@@ -18,7 +18,7 @@ spec:
       - name: book-management-webapp
         image: 296369311089.dkr.ecr.eu-west-3.amazonaws.com/book-management-webapp:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
         # Add env, resources, probes here if needed
 ---
 apiVersion: v1
@@ -32,4 +32,4 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 8080
+    targetPort: 8081
