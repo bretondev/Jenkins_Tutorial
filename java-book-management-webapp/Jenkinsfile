@@ -6,14 +6,17 @@ pipeline {
         CONTAINER_NAME = 'book-crud-container'
         HOST_PORT = '8081'
         CONTAINER_PORT = '8081'
+        APP_DIR = 'java-book-management-webapp'
     }
 
     stages {
         
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build("${IMAGE_NAME}:latest", ".")
+                dir("${APP_DIR}") {
+                    script {
+                        docker.build("${IMAGE_NAME}:latest", ".")
+                    }
                 }
             }
         }
@@ -21,15 +24,17 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                script {
-                    bat 'docker ps -a --format "{{.Names}}" | findstr /R /C:"^' + CONTAINER_NAME + '$" >nul'
-                    bat """
-                    if %ERRORLEVEL% == 0 (
-                        docker stop ${CONTAINER_NAME}
-                        docker rm ${CONTAINER_NAME}
-                    )
-                    """
-                    bat "docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} ${IMAGE_NAME}:latest"
+                dir("${APP_DIR}") {
+                    script {
+                        bat 'docker ps -a --format "{{.Names}}" | findstr /R /C:"^' + CONTAINER_NAME + '$" >nul'
+                        bat """
+                        if %ERRORLEVEL% == 0 (
+                            docker stop ${CONTAINER_NAME}
+                            docker rm ${CONTAINER_NAME}
+                        )
+                        """
+                        bat "docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} ${IMAGE_NAME}:latest"
+                    }
                 }
             }
         }
