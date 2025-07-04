@@ -16,11 +16,10 @@ pipeline {
         stage('Login to ECR') {
             steps {
                 withCredentials([
-    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
-    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
-]) { 
+                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) { 
                     bat """
-                        cd ${WORKDIR}
                         aws configure set aws_access_key_id %AWS_ACCESS_KEY_ID%
                         aws configure set aws_secret_access_key %AWS_SECRET_ACCESS_KEY%
                         aws configure set region %AWS_REGION%
@@ -48,19 +47,18 @@ pipeline {
 
         stage('Deploy to ECS') {
             steps {
-                withCredentials(    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
-    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
                     script {
                         def taskDefArn = bat(
-                            script: """
-                                cd ${WORKDIR}
-                                aws ecs list-task-definitions --family-prefix ${CLUSTER_NAME} --sort DESC --max-items 1 --query "taskDefinitionArns[0]" --output text
-                            """,
-                            returnStdout: true
+                            script: "aws ecs list-task-definitions --family-prefix ${CLUSTER_NAME} --sort DESC --max-items 1 --query \"taskDefinitionArns[0]\" --output text",
+                            returnStdout: true,
+                            dir: "${WORKDIR}"
                         ).trim()
 
                         bat """
-                            cd ${WORKDIR}
                             aws configure set aws_access_key_id %AWS_ACCESS_KEY_ID%
                             aws configure set aws_secret_access_key %AWS_SECRET_ACCESS_KEY%
                             aws configure set region %AWS_REGION%
