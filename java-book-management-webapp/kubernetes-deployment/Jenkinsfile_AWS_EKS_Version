@@ -69,7 +69,7 @@ pipeline {
                 // Here we do a kubectl set image to update the deployment image dynamically
                 
                 bat """
-                    kubectl --kubeconfig=%KUBECONFIG% -n ${K8S_NAMESPACE} apply -f deployment.yaml
+                    kubectl --kubeconfig=%KUBECONFIG% -n ${K8S_NAMESPACE} apply -f kubernetes-deployment/deployment.yaml
                 """
 
                 // Optionally, rollout status to wait for the deployment to finish
