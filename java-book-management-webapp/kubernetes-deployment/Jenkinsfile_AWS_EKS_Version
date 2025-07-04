@@ -69,20 +69,12 @@ pipeline {
                 // Here we do a kubectl set image to update the deployment image dynamically
                 
                 bat """
-                    kubectl --kubeconfig=%KUBECONFIG% -n ${K8S_NAMESPACE} set image deployment/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+                    kubectl --kubeconfig=%KUBECONFIG% -n ${K8S_NAMESPACE} apply -f deployment.yaml
                 """
 
                 // Optionally, rollout status to wait for the deployment to finish
                 bat """
                     kubectl --kubeconfig=%KUBECONFIG% -n ${K8S_NAMESPACE} rollout status deployment/${K8S_DEPLOYMENT_NAME}
-                """
-            }
-        }
-        
-        stage('Create Service in EKS') {
-            steps {
-                bat """
-                    kubectl --kubeconfig=%KUBECONFIG% apply -f ${WORKDIR}\\k8s\\service.yaml
                 """
             }
         }
