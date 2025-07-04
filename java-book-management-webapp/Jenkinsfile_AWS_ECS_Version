@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = 'us-east-1' // Change to your region
+        ECR_REPO = 'your-ecr-repo-name'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        AWS_ACCOUNT_ID = '123456789012'  // your AWS account ID
+        CLUSTER_NAME = 'your-ecs-cluster-name'
+        SERVICE_NAME = 'your-ecs-service-name'
+        CONTAINER_NAME = 'your-container-name'  // container name in ECS task definition
+    }
+
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}")
+                }
+            }
+        }
+
+        stage('Login to ECR') {
+            steps {
+                script {
+                    sh """
+                    aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    """
+                }
+            }
+        }
+
+        stage('Push to ECR') {
+            steps {
+                script {
+                    dockerImage.push()
+                }
+            }
+        }
+
+        stage('Deploy to ECS') {
+            steps {
+                script {
+                    // Update ECS service with new image tag
+                    sh """
+                    aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --force-new-deployment --region ${AWS_REGION}
+                    """
+                }
+            }
+        }
+    }
+}
