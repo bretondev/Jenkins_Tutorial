@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = 'eu-west-3'
         ECR_REPO = 'book-management-webapp'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        AWS_ACCOUNT_ID = '123456789012'  // your AWS account ID
+        AWS_ACCOUNT_ID = '296369311089'  // your AWS account ID
         CLUSTER_NAME = 'book-management-webapp'
         SERVICE_NAME = 'book-management-webapp'
         WORKDIR = 'java-book-management-webapp'
