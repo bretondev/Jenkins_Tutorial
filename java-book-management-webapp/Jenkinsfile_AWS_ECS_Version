@@ -2,12 +2,13 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'eu-west-3' // your AWS region
+        AWS_REGION = 'eu-west-3'
         ECR_REPO = 'book-management-webapp'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         AWS_ACCOUNT_ID = '123456789012'  // your AWS account ID
         CLUSTER_NAME = 'book-management-webapp'
         SERVICE_NAME = 'book-management-webapp'
+        WORKDIR = 'java-book-management-webapp'
     }
 
     stages {
@@ -15,13 +16,13 @@ pipeline {
         stage('Login to ECR') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-credentials-id', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''
-                        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-                        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-                        aws configure set region $AWS_REGION
-
-                        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-                    '''
+                    bat """
+                        cd ${WORKDIR}
+                        aws configure set aws_access_key_id %AWS_ACCESS_KEY_ID%
+                        aws configure set aws_secret_access_key %AWS_SECRET_ACCESS_KEY%
+                        aws configure set region %AWS_REGION%
+                        aws ecr get-login-password --region %AWS_REGION% | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.%AWS_REGION%.amazonaws.com
+                    """
                 }
             }
         }
@@ -29,7 +30,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}", '.')
+                    dockerImage = docker.build("${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}", "${WORKDIR}")
                 }
             }
         }
@@ -42,16 +43,43 @@ pipeline {
             }
         }
 
+        stage('Register Task Definition') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'aws-credentials-id', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    bat """
+                        cd ${WORKDIR}
+                        aws configure set aws_access_key_id %AWS_ACCESS_KEY_ID%
+                        aws configure set aws_secret_access_key %AWS_SECRET_ACCESS_KEY%
+                        aws configure set region %AWS_REGION%
+                        
+                        powershell -Command "(Get-Content taskdef.json) -replace '\\\$\\{IMAGE_TAG\\\}', '${IMAGE_TAG}' | Set-Content taskdef-temp.json"
+                        
+                        aws ecs register-task-definition --cli-input-json file://taskdef-temp.json
+                    """
+                }
+            }
+        }
+
         stage('Deploy to ECS') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-credentials-id', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''
-                        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-                        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-                        aws configure set region $AWS_REGION
+                    script {
+                        def taskDefArn = bat(
+                            script: """
+                                cd ${WORKDIR}
+                                aws ecs list-task-definitions --family-prefix ${CLUSTER_NAME} --sort DESC --max-items 1 --query "taskDefinitionArns[0]" --output text
+                            """,
+                            returnStdout: true
+                        ).trim()
 
-                        aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --force-new-deployment --region $AWS_REGION
-                    '''
+                        bat """
+                            cd ${WORKDIR}
+                            aws configure set aws_access_key_id %AWS_ACCESS_KEY_ID%
+                            aws configure set aws_secret_access_key %AWS_SECRET_ACCESS_KEY%
+                            aws configure set region %AWS_REGION%
+                            aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --task-definition ${taskDefArn} --force-new-deployment
+                        """
+                    }
                 }
             }
         }
