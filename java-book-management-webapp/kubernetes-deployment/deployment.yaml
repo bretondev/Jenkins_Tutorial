@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: book-management-webapp
-        image: 296369311089.dkr.ecr.eu-west-3.amazonaws.com/book-management-webapp:latest
+        image: 296369311089.dkr.ecr.eu-west-3.amazonaws.com/book-management-webapp:4
         ports:
         - containerPort: 8081
         # Add env, resources, probes here if needed
