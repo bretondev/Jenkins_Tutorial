@@ -1,27 +1,44 @@
+// 📄 Declarative Jenkins Pipeline with branch-specific stages
 pipeline {
+
+    // 🔷 Agent definition
+    // Run this pipeline on any available Jenkins agent (node)
     agent any
+
+    // 🔷 Stages of the pipeline
     stages {
-         stage('Debug Branch Name') {
+
+        // 🚀 Stage 1: Debug branch name
+        stage('Debug Branch Name') {
             steps {
+                // Print the name of the branch that triggered the build
                 echo "Detected branch: ${env.BRANCH_NAME}"
             }
         }
 
+        // 🚀 Stage 2: Runs only if the branch is 'main'
         stage('Stage for the main branch') {
             when {
+                // Condition: run this stage only if BRANCH_NAME is 'main' or 'origin/main'
                 expression { env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'origin/main' }
             }
             steps {
+                // Print a message indicating the main branch was detected
                 echo "Branch ${env.BRANCH_NAME} has been detected in the main branch stage"
             }
         }
+
+        // 🚀 Stage 3: Runs only if the branch is 'dev'
         stage('Stage for the dev branch') {
             when {
+                // Condition: run this stage only if BRANCH_NAME is 'dev' or 'origin/dev'
                 expression { env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'origin/dev' }
             }
             steps {
+                // Print a message indicating the dev branch was detected
                 echo "Branch ${env.BRANCH_NAME} has been detected in the dev branch stage"
             }
         }
-    }
-}
+
+    } // End of stages
+} // End of pipeline
