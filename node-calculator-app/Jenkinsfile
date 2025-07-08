@@ -1,37 +1,62 @@
+// ======================================================================
+// Jenkinsfile for building and running a Node.js application on Windows
+//
+// This pipeline:
+// - Checks out code from GitHub
+// - Installs dependencies
+// - Runs tests
+// - Starts the application
+//
+// Prerequisites:
+// - A Node.js installation configured in Jenkins with the name 'NodeJS-22'
+// - The repository https://github.com/bretondev/Jenkins_Tutorial.git
+// - Runs on a Windows agent (because it uses `bat` commands)
+// ======================================================================
+
 pipeline {
+    // Allocate any available agent (node)
     agent any
 
+    // Specify the tools to be installed/provided before the build
     tools {
-        nodejs 'NodeJS-22'  // Ensure you have configured NodeJS-22 in Jenkins
+        nodejs 'NodeJS-22'  // Jenkins tool configuration name for Node.js 22
     }
 
     stages {
         stage('Checkout') {
             steps {
+                // Checkout the 'main' branch from the given GitHub repository
                 git branch: 'main', url: 'https://github.com/bretondev/Jenkins_Tutorial.git'
             }
         }
-        
+
         stage('Install dependencies') {
             steps {
+                // Change directory to the Node.js app folder
                 dir('node-calculator-app') {
-                    bat 'npm install'  // Use bat for Windows to run npm install
+                    // Install Node.js dependencies (npm install)
+                    // Use `bat` because the agent runs on Windows
+                    bat 'npm install'
                 }
             }
         }
 
         stage('Package') {
             steps {
+                // Change directory to the Node.js app folder
                 dir('node-calculator-app') {
-                    bat 'npm test'  // Use bat for Windows to run npm test
+                    // Run the application's tests (npm test)
+                    bat 'npm test'
                 }
             }
         }
 
         stage('Run Application') {
             steps {
+                // Change directory to the Node.js app folder
                 dir('node-calculator-app') {
-                    bat 'npm start'  // Use bat for Windows to run npm start
+                    // Start the application (npm start)
+                    bat 'npm start'
                 }
             }
         }
